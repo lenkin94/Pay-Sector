@@ -54,7 +54,7 @@ public class WalletService {
     }
 
     @Transactional
-    public Transaction addFunds(UUID walletId, AddFundsRequest addFundsRequest) {
+    public void addFunds(UUID walletId, AddFundsRequest addFundsRequest) {
 
         Wallet wallet = getWalletById(walletId);
         String transactionDescription = "%.2f EUR added to wallet".formatted(addFundsRequest.getAmount().doubleValue());
@@ -65,7 +65,7 @@ public class WalletService {
 
         walletRepository.save(wallet);
 
-        return transactionService.createNewTransaction(wallet.getOwner(),
+         transactionService.createNewTransaction(wallet.getOwner(),
                 addFundsRequest.getOwnerName(),
                 walletId.toString(),
                 addFundsRequest.getAmount(),
@@ -86,13 +86,19 @@ public class WalletService {
     }
 
     @Transactional
-    public Transaction transferFunds(UUID senderId, TransferRequest transferRequest) {
+    public void transferFunds(UUID senderId, TransferRequest transferRequest) {
 
         User sender = userService.getById(senderId);
 
         boolean isFailed = false;
         String failureReason = "";
-        String transferDescription = "Transfer from '%s' to '%s', for %.2f EUR".formatted(sender.getUsername(), transferRequest.getReceiverUsername(), transferRequest.getAmount());
+        String transferDescription = "";
+
+        if (transferRequest.getTransferDescription().isEmpty()) {
+            transferDescription = "Transfer from '%s' to '%s', for %.2f EUR".formatted(sender.getUsername(), transferRequest.getReceiverUsername(), transferRequest.getAmount());
+        } else {
+            transferDescription = transferRequest.getTransferDescription();
+        }
 
         Wallet senderWallet = walletRepository.findByOwnerId(sender.getId());
 
@@ -112,7 +118,7 @@ public class WalletService {
 
 
         if (isFailed) {
-            return transactionService.createNewTransaction(sender,
+            transactionService.createNewTransaction(sender,
                     sender.getUsername(),
                     transferRequest.getReceiverUsername(),
                     transferRequest.getAmount(),
@@ -156,23 +162,21 @@ public class WalletService {
                 transferDescription,
                 null
         );
-
-        return senderTransaction;
     }
 
-    public Wallet updateWalletDeposit(UUID walletId, BigDecimal amount) {
+    public void updateWalletDeposit(UUID walletId, BigDecimal amount) {
         Wallet wallet = getWalletById(walletId);
         wallet.setBalance(wallet.getBalance().add(amount));
         wallet.setUpdatedOn(LocalDateTime.now());
 
-        return walletRepository.save(wallet);
+        walletRepository.save(wallet);
     }
 
-    public Wallet updateWalletWithdrawal(UUID walletId, BigDecimal amount) {
+    public void updateWalletWithdrawal(UUID walletId, BigDecimal amount) {
         Wallet wallet = getWalletById(walletId);
         wallet.setBalance(wallet.getBalance().subtract(amount));
         wallet.setUpdatedOn(LocalDateTime.now());
 
-        return walletRepository.save(wallet);
+        walletRepository.save(wallet);
     }
 }

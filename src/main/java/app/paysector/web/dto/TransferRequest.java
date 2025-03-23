@@ -21,4 +21,6 @@ public class TransferRequest {
     @NotNull
     @Positive
     private BigDecimal amount;
+
+    private String transferDescription;
 }

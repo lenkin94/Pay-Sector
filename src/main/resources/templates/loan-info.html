@@ -113,7 +113,7 @@
           </button>
         </form>
 
-        <form th:action="@{'/loan/' + ${loan.id} + '/full-repayment'}" th:method="PUT">
+        <form th:if="${loan.loanStatus.name() == 'ACTIVE'}" th:action="@{'/loan/' + ${loan.id} + '/full-repayment'}" th:method="PUT">
           <button class="profile-actions-button">
             <p>Full repayment</p>
           </button>
