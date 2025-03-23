@@ -155,9 +155,4 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
     }
 
-    public boolean isActiveUser(UUID userId) {
-        User user = getById(userId);
-
-        return user.isActive();
-    }
 }

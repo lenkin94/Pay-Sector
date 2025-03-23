@@ -92,7 +92,7 @@ public class WalletService {
 
         boolean isFailed = false;
         String failureReason = "";
-        String transferDescription = "";
+        String transferDescription;
 
         if (transferRequest.getTransferDescription().isEmpty()) {
             transferDescription = "Transfer from '%s' to '%s', for %.2f EUR".formatted(sender.getUsername(), transferRequest.getReceiverUsername(), transferRequest.getAmount());
