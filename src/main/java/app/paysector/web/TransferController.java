@@ -44,6 +44,9 @@ public class TransferController {
     @PostMapping
     public String transfer(@Valid TransferRequest transferRequest, @AuthenticationPrincipal AuthenticateUser authenticateUser, BindingResult bindingResult) {
 
+        if (bindingResult.hasErrors()) {
+            return "transfer";
+        }
 
         walletService.transferFunds(authenticateUser.getUserId(), transferRequest);
 

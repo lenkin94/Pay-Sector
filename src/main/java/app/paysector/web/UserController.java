@@ -63,7 +63,7 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/edit-profile/change-password")
-    public ModelAndView getChangePasswordPage(@PathVariable UUID userId, @Valid ChangePasswordRequest changePasswordRequest) {
+    public ModelAndView getChangePasswordPage(@PathVariable UUID userId, ChangePasswordRequest changePasswordRequest) {
 
         User user = userService.getById(userId);
 
