@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="/css/common.css">
+  <link rel="stylesheet" type="text/css" href="/css/nav-top.css">
+  <link rel="stylesheet" type="text/css" href="/css/home-common.css">
+  <link rel="stylesheet" type="text/css" href="/css/home.css">
+  <link rel="stylesheet" type="text/css" href="/css/transactions.css">
+  <title>Home</title>
+</head>
+<body>
+<div class="nav-bar">
+  <div class="top-bar-container">
+    <nav>
+      <div class="top_navbar">
+        <div class="pay-sector-nav-bar">
+          <div class="pay-sector-nav-bar-name">Pay Sector</div>
+        </div>
+        <div class="func-block">
+          <a href="/home" class="active">
+            <p>Home</p>
+          </a>
+        </div>
+        <div class="func-block">
+          <a href="/transfers">
+            <p>Transfers</p>
+          </a>
+          <a href="/bills">
+            <p>Bills</p>
+          </a>
+          <a href="/wallet">
+            <p>Wallet</p>
+          </a>
+          <a href="/transactions">
+            <p>Transactions</p>
+          </a>
+          <a href="/loan">
+            <p>Loan</p>
+          </a>
+        </div>
+        <div class="func-block admin-func-block" th:if="${user.role.name() == 'ADMIN'}">
+
+          <a href="/users">
+            <p>Users</p>
+          </a>
+        </div>
+        <div class="func-block">
+          <a class="logout" href="/logout">
+            <p>Logout</p>
+          </a>
+        </div>
+      </div>
+    </nav>
+  </div>
+</div>
+
+<main>
+
+
+  <div class="home-section">
+    <div class="single-section-box home-profile-information">
+      <div class="profile-header">
+        <img th:src="${#strings.isEmpty(user.profilePicture) ? 'https://media.istockphoto.com/id/1300845620/vector/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.jpg?s=612x612&w=0&k=20&c=yBeyba0hUkh14_jgv1OKqIH0CCSWU_4ckRkAoy2p73o=' : user.profilePicture}" alt="Profile Picture" class="profile-avatar">
+        <h2 class="profile-name" th:text="${user.username}"></h2>
+        <div class="profile-status-role-container">
+          <p th:if="${user.isActive()}" class="active-profile">ACTIVE</p>
+          <p th:if="${!user.isActive()}" class="inactive-profile">BANNED</p>
+        </div>
+      </div>
+      <div class="profile-info">
+        <div class="details-section-container">
+          <strong>Full name: </strong>
+          <p th:text="${user.firstName + ' ' + user.lastName}"></p>
+        </div>
+        <div class="details-section-container">
+          <strong>Email: </strong>
+          <p th:text="${#strings.isEmpty(user.email) ? 'Edit your profile and add email' : user.email}"> </p>
+        </div>
+        <div class="details-section-container">
+          <strong>Joined: </strong>
+          <p th:text="${#temporals.format(user.createdAt, 'dd MMM YYYY HH:mm')}"></p>
+        </div>
+        <div class="details-section-container">
+          <strong>Country: </strong>
+          <p th:text="${#strings.capitalize(#strings.toLowerCase(user.country))}"></p>
+        </div>
+      </div>
+
+      <a th:href="@{'/users/' + ${user.id} + '/edit-profile'}" class="profile-actions-button">
+        <p>Edit Profile</p>
+      </a>
+    </div>
+
+    <div class="single-section-box home-wallet">
+      <div class="default-label-box">
+        <p>Wallet</p>
+      </div>
+      <div class="wallet-balance">
+        <p th:text="${user.wallet.balance + ' EUR'}" class="balance"></p>
+        <p class="available-balance-text">Available Balance</p>
+      </div>
+
+      <a class="profile-actions-button" th:href="@{/wallet}">
+        <p>Open Wallet</p>
+      </a>
+
+      <div class="details-section">
+        <div class="details-section-container">
+          <strong>Wallet id: </strong>
+          <p th:text="${user.wallet.id}"></p>
+        </div>
+        <div class="details-section-container">
+          <strong>Last updated on: </strong>
+          <p th:text="${#temporals.format(user.wallet.updatedOn, 'dd MMM YYYY HH:mm')}"></p>
+        </div>
+      </div>
+
+      <div class="single-section-box home-bills">
+        <div class="default-label-box">
+          <p>Request payment</p>
+        </div>
+        <table class="styled-table">
+          <thead>
+          <tr>
+            <th>Type</th>
+            <th>Amount</th>
+            <th>Payment date</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="bill : ${user.bills}" th:if="${bill.isPaid() == false}">
+            <td th:text="${#strings.capitalize(#strings.toLowerCase(bill.billType.name())) + ' bill'}"></td>
+            <td th:text="${bill.amount + ' EUR'}"></td>
+            <td th:text="${#temporals.format(bill.endPeriod.plusMonths(1), 'dd MMM YYYY')}"></td>
+          </tr>
+          <tr th:if="${not #lists.isEmpty(loans) and loans.get(0).isRequestPayment()}">
+            <td th:text="${'Loan'}"></td>
+            <td th:text="${loans.get(0).monthlyPayment + ' EUR'}"></td>
+            <td th:text="${#temporals.format(loans.get(0).paymentDate, 'dd MMM YYYY')}"></td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+</body>
+</html>

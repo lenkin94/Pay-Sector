@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add bill</title>
+  <link rel="stylesheet" type="text/css" href="/css/common.css">
+  <link rel="stylesheet" type="text/css" href="/css/nav-top.css">
+  <link rel="stylesheet" type="text/css" href="/css/home-common.css">
+  <link rel="stylesheet" type="text/css" href="/css/home.css">
+  <link rel="stylesheet" type="text/css" href="/css/transactions.css">
+  <link rel="stylesheet" type="text/css" href="/css/form.css">
+
+<body>
+<div class="nav-bar">
+  <div class="top-bar-container">
+    <nav>
+      <div class="top_navbar">
+        <div class="pay-sector-nav-bar">
+          <div class="pay-sector-nav-bar-name">Pay Sector</div>
+        </div>
+        <div class="func-block">
+          <a href="/home" class="active">
+            <p>Home</p>
+          </a>
+        </div>
+        <div class="func-block">
+          <a href="/transfers">
+            <p>Transfers</p>
+          </a>
+          <a href="/bills">
+            <p>Bills</p>
+          </a>
+          <a href="/wallet">
+            <p>Wallet</p>
+          </a>
+          <a href="/transactions">
+            <p>Transactions</p>
+          </a>
+          <a href="/loan">
+            <p>Loan</p>
+          </a>
+        </div>
+        <div class="func-block admin-func-block" th:if="${user.role.name() == 'ADMIN'}">
+          <a href="/users">
+            <p>Users</p>
+          </a>
+        </div>
+        <div class="func-block">
+          <a class="logout" href="/logout">
+            <p>Logout</p>
+          </a>
+        </div>
+      </div>
+    </nav>
+  </div>
+</div>
+
+<section class="section full-height">
+
+  <form class="form" th:action="@{'/bills/add-bill'}" th:method="POST" th:object="${bill}">
+
+    <h3>Add Bill</h3>
+
+    <label for="billNumber">Bill number</label>
+    <input type="text" placeholder="Bill number" id="billNumber" minlength="5" maxlength="20" th:field="*{billNumber}" required>
+    <p class="alert-warning" th:if="${#fields.hasErrors('billNumber')}" th:errors="*{billNumber}"></p>
+
+    <label for="type">Type</label>
+    <select name="country" id="type" th:field="*{billType}">
+      <option th:each="type : ${T(app.paysector.bill.model.BillType).values()}" th:value="${type}" th:text="${#strings.capitalize(#strings.toLowerCase(type))}"></option>
+    </select>
+
+      <button type="submit">Add bill</button>
+
+  </form>
+
+</section>
+</body>
+
+</html>

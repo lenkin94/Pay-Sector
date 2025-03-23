@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="/css/common.css">
+  <link rel="stylesheet" type="text/css" href="/css/nav-top.css">
+  <link rel="stylesheet" type="text/css" href="/css/home-common.css">
+  <link rel="stylesheet" type="text/css" href="/css/home.css">
+  <link rel="stylesheet" type="text/css" href="/css/edit-menu.css">
+  <title>Edit Profile</title>
+</head>
+<body>
+<div class="nav-bar">
+  <div class="top-bar-container">
+    <nav>
+      <div class="top_navbar">
+        <div class="pay-sector-nav-bar">
+          <div class="pay-sector-nav-bar-name">Pay Sector</div>
+        </div>
+        <div class="func-block">
+          <a href="/home" class="active">
+            <p>Home</p>
+          </a>
+        </div>
+        <div class="func-block">
+          <a href="/transfers">
+            <p>Transfers</p>
+          </a>
+          <a href="/bills">
+            <p>Bills</p>
+          </a>
+          <a href="/wallet">
+            <p>Wallet</p>
+          </a>
+          <a href="/transactions">
+            <p>Transactions</p>
+          </a>
+          <a href="/loan">
+            <p>Loan</p>
+          </a>
+        </div>
+        <div class="func-block admin-func-block" th:if="${user.role.name() == 'ADMIN'}">
+          <a href="/users">
+            <p>Users</p>
+          </a>
+        </div>
+        <div class="func-block">
+          <a class="logout" href="/logout">
+            <p>Logout</p>
+          </a>
+        </div>
+      </div>
+    </nav>
+  </div>
+</div>
+<main>
+
+  <div class="home-section">
+    <div class="single-section-box edit-menu">
+
+
+      <form class="form" th:action="@{'/users/' + ${user.id} + '/edit-profile'}" th:method="PUT" th:object="${editProfileDetails}">
+
+        <label for="firstName">First Name</label>
+        <input type="text" id="firstName" placeholder="First Name" th:field="*{firstName}">
+        <p class="alert-warning" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></p>
+
+        <label for="lastName">Last Name</label>
+        <input type="text" id="lastName" placeholder="Last Name" th:field="*{lastName}">
+        <p class="alert-warning" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></p>
+
+        <label for="email">Email</label>
+        <input type="text" id="email" placeholder="Email Address" th:field="*{email}">
+        <p class="alert-warning" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+
+        <label for="profilePicture">Profile Picture URL</label>
+        <input type="text" id="profilePicture" placeholder="Image Link" th:field="*{profilePicture}">
+        <p class="alert-warning" th:if="${#fields.hasErrors('profilePicture')}" th:errors="*{profilePicture}"></p>
+
+        <label for="country">Country</label>
+        <select name="country" id="country" th:field="*{country}">
+          <option th:each="country : ${T(app.paysector.user.model.Country).values()}" th:value="${country}" th:text="${#strings.capitalize(#strings.toLowerCase(country))}"></option>
+        </select>
+        <button class="profile-actions-button">
+          <p>Save</p>
+        </button>
+        <a class="profile-actions-button" th:href="@{'/users/' + ${user.id} + '/edit-profile/change-password'}">
+          <p>Change password</p>
+        </a>
+      </form>
+    </div>
+  </div>
+</main>
+</body>
+</html>

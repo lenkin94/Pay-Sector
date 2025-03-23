@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/css/common.css">
+    <link rel="stylesheet" type="text/css" href="/css/nav-top.css">
+    <link rel="stylesheet" type="text/css" href="/css/home-common.css">
+    <link rel="stylesheet" type="text/css" href="/css/home.css">
+    <link rel="stylesheet" type="text/css" href="/css/transactions.css">
+    <link rel="stylesheet" type="text/css" href="/css/form.css">
+    <title>Offer details</title>
+</head>
+<body>
+<div class="nav-bar">
+    <div class="top-bar-container">
+        <nav>
+            <div class="top_navbar">
+                <div class="pay-sector-nav-bar">
+                    <div class="pay-sector-nav-bar-name">Pay Sector</div>
+                </div>
+                <div class="func-block">
+                    <a href="/home" class="active">
+                        <p>Home</p>
+                    </a>
+                </div>
+                <div class="func-block">
+                    <a href="/transfers">
+                        <p>Transfers</p>
+                    </a>
+                    <a href="/bills">
+                        <p>Bills</p>
+                    </a>
+                    <a href="/wallet">
+                        <p>Wallet</p>
+                    </a>
+                    <a href="/transactions">
+                        <p>Transactions</p>
+                    </a>
+                    <a href="/loan">
+                        <p>Loan</p>
+                    </a>
+                </div>
+                <div class="func-block admin-func-block" th:if="${user.role.name() == 'ADMIN'}">
+                    <a href="/users">
+                        <p>Users</p>
+                    </a>
+                </div>
+                <div class="func-block">
+                    <a class="logout" href="/logout">
+                        <p>Logout</p>
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </div>
+</div>
+
+
+<div class="home-section">
+    <div class="single-section-box home-profile-information" th:object="${loanDetails}">
+        <div class="profile-info">
+            <h3>Loan Details</h3>
+            <div class="details-section-container">
+                <strong>Amount: </strong>
+                <p th:text="${loanDetails.amount} + ' EUR'"></p>
+            </div>
+            <div class="details-section-container">
+                <strong>Period: </strong>
+                <p th:text="${#temporals.format(loanDetails.startPeriod, 'dd MMM YYYY') + ' - ' + #temporals.format(loanDetails.endPeriod, 'dd MMM YYYY')}"></p>
+            </div>
+            <div class="details-section-container">
+                <strong>Monthly interest: </strong>
+                <p th:text="${(loanDetails.interest * 100) + '%'}"> </p>
+            </div>
+            <div class="details-section-container">
+                <strong>Monthly payment : </strong>
+                <p th:text="${loanDetails.monthlyPayment} + ' EUR'"></p>
+            </div>
+            <div class="details-section-container">
+                <strong>Total sum: </strong>
+                <p th:text="${loanDetails.finalSum} + ' EUR'"></p>
+            </div>
+            <form class="form" th:action="@{'/loan/accept-details'}" th:method="POST" th:object="${loanDetails}">
+
+                <label for="periodInMonths"></label>
+                <input type="hidden" placeholder="3 - 60 months" id="periodInMonths" min="3" max="60" th:field="*{periodInMonths}">
+
+                <label for="amount"></label>
+                <input type="hidden" id="amount" placeholder="100 - 100000 EUR" min="1000" step="10" max="100000" required="" th:field="*{amount}">
+
+                <button type="submit">Accept details</button>
+
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

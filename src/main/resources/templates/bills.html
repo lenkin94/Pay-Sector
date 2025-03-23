@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bills</title>
+  <link rel="stylesheet" type="text/css" href="/css/common.css">
+  <link rel="stylesheet" type="text/css" href="/css/nav-top.css">
+  <link rel="stylesheet" type="text/css" href="/css/home-common.css">
+  <link rel="stylesheet" type="text/css" href="/css/home.css">
+
+  <link rel="stylesheet" type="text/css" href="/css/transactions.css">
+</head>
+<body>
+<div class="nav-bar">
+  <div class="top-bar-container">
+    <nav>
+      <div class="top_navbar">
+        <div class="pay-sector-nav-bar">
+          <div class="pay-sector-nav-bar-name">Pay Sector</div>
+        </div>
+        <div class="func-block">
+          <a href="/home" class="active">
+            <p>Home</p>
+          </a>
+        </div>
+        <div class="func-block">
+          <a href="/transfers">
+            <p>Transfers</p>
+          </a>
+          <a href="/bills">
+            <p>Bills</p>
+          </a>
+          <a href="/wallet">
+            <p>Wallet</p>
+          </a>
+          <a href="/transactions">
+            <p>Transactions</p>
+          </a>
+          <a href="/loan">
+            <p>Loan</p>
+          </a>
+        </div>
+        <div class="func-block admin-func-block" th:if="${user.role.name() == 'ADMIN'}">
+          <a href="/users">
+            <p>Users</p>
+          </a>
+        </div>
+        <div class="func-block">
+          <a class="logout" href="/logout">
+            <p>Logout</p>
+          </a>
+        </div>
+      </div>
+    </nav>
+  </div>
+</div>
+
+
+
+  <main>
+
+
+    <a class="profile-actions-button" th:href="@{'/bills/add-bill'}">
+      <p>Add bill</p>
+      <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+      </svg>
+    </a>
+    <div class="home-section">
+      <div class="single-section-box transactions-container">
+        <table class="styled-table">
+          <thead>
+          <tr>
+            <th>Type</th>
+            <th>Account Number</th>
+            <th>Status</th>
+            <th>Amount</th>
+            <th>Period</th>
+            <th>Payed on</th>
+            <th>Pay</th>
+            <th></th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="bill : ${bills}">
+            <td th:text="${bill.billType.name()}"></td>
+            <td th:text="${bill.billNumber}"></td>
+            <td>
+              <p th:if="${bill.isPaid() == false}" class="status request-payment">Request payment</p>
+              <p th:if="${bill.isPaid() == true}" class="status payed">No obligations</p>
+            </td>
+            <td th:text="${bill.amount + ' EUR'}"></td>
+            <td th:text="${#temporals.format(bill.startPeriod, 'dd MMM YYYY') + ' - ' + #temporals.format(bill.endPeriod, 'dd MMM YYYY')}"></td>
+            <td th:text="${bill.isPaid() == false ? '' : #temporals.format(bill.payedOn, 'dd MMM YYYY')}"></td>
+            <td>
+              <form th:if="${bill.isPaid() == false}" th:action="@{'/bills/' + ${bill.id} + '/pay'}" th:method="PUT">
+                <button class="profile-actions-button">
+                  <p>Pay</p>
+                </button>
+              </form></td>
+            <td>
+              <form th:if="${bill.isPaid() == false}" th:action="@{'/bills/' + ${bill.id} + '/remove'}" th:method="PUT">
+                <button class="profile-actions-button">
+                  <p>Remove</p>
+                </button>
+              </form></td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+</body>
+</html>

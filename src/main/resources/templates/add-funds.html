@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Funds</title>
+    <link rel="stylesheet" type="text/css" href="/css/common.css">
+    <link rel="stylesheet" type="text/css" href="/css/nav-top.css">
+    <link rel="stylesheet" type="text/css" href="/css/home-common.css">
+    <link rel="stylesheet" type="text/css" href="/css/home.css">
+    <link rel="stylesheet" type="text/css" href="/css/transactions.css">
+    <link rel="stylesheet" type="text/css" href="/css/form.css">
+</head>
+<body>
+<div class="nav-bar">
+    <div class="top-bar-container">
+        <nav>
+            <div class="top_navbar">
+                <div class="pay-sector-nav-bar">
+                    <div class="pay-sector-nav-bar-name">Pay Sector</div>
+                </div>
+                <div class="func-block">
+                    <a href="/home" class="active">
+                        <p>Home</p>
+                    </a>
+                </div>
+                <div class="func-block">
+                    <a href="/transfers">
+                        <p>Transfers</p>
+                    </a>
+                    <a href="/bills">
+                        <p>Bills</p>
+                    </a>
+                    <a href="/wallet">
+                        <p>Wallet</p>
+                    </a>
+                    <a href="/transactions">
+                        <p>Transactions</p>
+                    </a>
+                    <a href="/loan">
+                        <p>Loan</p>
+                    </a>
+                </div>
+                <div class="func-block admin-func-block" th:if="${user.role.name() == 'ADMIN'}">
+                    <a href="/users">
+                        <p>Users</p>
+                    </a>
+                </div>
+                <div class="func-block">
+                    <a class="logout" href="/logout">
+                        <p>Logout</p>
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </div>
+</div>
+
+<section class="section full-height">
+
+    <form class="form" th:action="@{'/wallet/add-funds'}" th:method="PUT" th:object="${addFundsRequest}">
+
+        <h3>Card Details</h3>
+
+        <label for="cardNumber">Card number</label>
+        <input type="text" placeholder="Number" id="cardNumber" th:field="*{cardNumber}">
+        <p class="alert-warning" th:if="${#fields.hasErrors('cardNumber')}" th:errors="*{cardNumber}"></p>
+
+        <label for="cardOwner">Card Owner</label>
+        <input type="text" placeholder="Full name" id="cardOwner" th:field="*{ownerName}">
+
+        <label for="validDate">Expire Date</label>
+        <input type="date" placeholder="Expire Date" id="validDate" th:field="*{expireDate}">
+
+        <label for="cvv">cvv</label>
+        <input type="text" placeholder="cvv" id="cvv" th:field="*{cvv}">
+
+        <label for="amount">Amount</label>
+        <input type="number" placeholder="Amount" id="amount" min="0" step="10" th:field="*{amount}">
+
+        <button type="submit">Add funds</button>
+
+    </form>
+
+</section>
+</body>
+</html>

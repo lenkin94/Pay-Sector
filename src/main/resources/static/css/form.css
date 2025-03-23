@@ -1,0 +1,139 @@
+.section {
+    padding: 50px 0;
+}
+
+.section.full-height {
+    display: flex;
+    flex-direction: column;
+}
+
+.section.full-height .container {
+    display: flex;
+    flex-direction: column;
+}
+
+.section.full-height .container .logo {
+    margin: auto 0;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 36px auto;
+    padding: 0 16px;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+}
+
+form {
+    height: auto;
+    width: 400px;
+    background-color: rgba(100, 106, 110, 0.11);
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(100, 106, 110, 0.1);
+    box-shadow: 0 0 40px rgba(8, 7, 16, 0.31);
+    padding: 36px 35px;
+    align-self: center;
+}
+
+form * {
+    font-family: cursive;
+    color: #080808;
+    letter-spacing: 0.5px;
+    outline: none;
+    border: none;
+}
+
+form h3 {
+    font-size: 32px;
+    font-weight: 500;
+    line-height: 42px;
+    text-align: center;
+    margin: auto;
+}
+
+label {
+    display: block;
+    margin-top: 30px;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+input,
+select {
+    display: block;
+    height: 50px;
+    width: 95%;
+    background-color: rgba(8, 8, 8, 0.07);
+    border-radius: 3px;
+    padding: 0 10px;
+    margin-top: 8px;
+    font-size: 14px;
+    font-weight: 300;
+}
+
+select {
+    width: 100%;
+}
+
+option {
+    background-color: rgb(89, 85, 85);
+}
+
+ ::placeholder {
+    color: #000000;
+}
+
+button {
+    margin-top: 50px;
+    width: 100%;
+    background: radial-gradient( circle at 90% top, #646365 0%, rgb(100, 106, 110));
+    color: #ffffff;
+    padding: 15px 0;
+    font-size: 18px;
+    font-weight: 600;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    box-shadow: inset 0 1px 9px rgba(7, 7, 7, 0.5);
+
+}
+
+input,
+select {
+    transition: all .2s;
+}
+
+input:hover,
+select:hover {
+    box-shadow: 0 1px 12px rgba(14, 15, 15);
+
+}
+
+.form-already {
+    color: #000000;
+    font-weight: 300;
+    text-align: center;
+    font-size: 12px;
+    margin: 20px auto auto;
+}
+
+.form-already a {
+    text-decoration: none;
+    transition: 0.5s ease-out;
+    background: radial-gradient(circle at 90% top, black, black);
+    background-size: 200%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.form-already a:hover {
+    background-position: right;
+    transition: 0.5s ease-out;
+}

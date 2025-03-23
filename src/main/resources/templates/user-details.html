@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="/css/common.css">
+  <link rel="stylesheet" type="text/css" href="/css/nav-top.css">
+  <link rel="stylesheet" type="text/css" href="/css/home-common.css">
+  <link rel="stylesheet" type="text/css" href="/css/home.css">
+  <link rel="stylesheet" type="text/css" href="/css/transactions.css">
+  <title>User details</title>
+</head>
+<body>
+<div class="nav-bar">
+  <div class="top-bar-container">
+    <nav>
+      <div class="top_navbar">
+        <div class="pay-sector-nav-bar">
+          <div class="pay-sector-nav-bar-name">Pay Sector</div>
+        </div>
+        <div class="func-block">
+          <a href="/home" class="active">
+            <p>Home</p>
+          </a>
+        </div>
+        <div class="func-block">
+          <a href="/transfers">
+            <p>Transfers</p>
+          </a>
+          <a href="/bills">
+            <p>Bills</p>
+          </a>
+          <a href="/wallet">
+            <p>Wallet</p>
+          </a>
+          <a href="/transactions">
+            <p>Transactions</p>
+          </a>
+          <a href="/loan">
+            <p>Loan</p>
+          </a>
+        </div>
+        <div class="func-block admin-func-block" th:if="${user.role.name() == 'ADMIN'}">
+          <a href="/users">
+            <p>Users</p>
+          </a>
+        </div>
+        <div class="func-block">
+          <a class="logout" href="/logout">
+            <p>Logout</p>
+          </a>
+        </div>
+      </div>
+    </nav>
+  </div>
+</div>
+
+
+<div class="home-section">
+  <div class="single-section-box home-profile-information">
+    <div class="profile-header">
+      <img th:src="${#strings.isEmpty(userDetails.profilePicture) ? 'https://media.istockphoto.com/id/1300845620/vector/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.jpg?s=612x612&w=0&k=20&c=yBeyba0hUkh14_jgv1OKqIH0CCSWU_4ckRkAoy2p73o=' : userDetails.profilePicture}" alt="Profile Picture" class="profile-avatar">
+      <h2 class="profile-name" th:text="${userDetails.username}"></h2>
+      <div class="profile-status-role-container">
+        <p th:if="${userDetails.isActive()}" class="active-profile">ACTIVE</p>
+        <p th:if="${!userDetails.isActive()}" class="inactive-profile">BANNED</p>
+      </div>
+    </div>
+    <div class="profile-info">
+      <div class="details-section-container">
+        <strong>Full name: </strong>
+        <p th:text="${userDetails.firstName + ' ' + userDetails.lastName}"></p>
+      </div>
+      <div class="details-section-container">
+        <strong>Email: </strong>
+        <p th:text="${userDetails.email}"> </p>
+      </div>
+      <div class="details-section-container">
+        <strong>Joined: </strong>
+        <p th:text="${#temporals.format(userDetails.createdAt, 'dd MMM YYYY HH:mm')}"></p>
+      </div>
+      <div class="details-section-container">
+        <strong>Country: </strong>
+        <p th:text="${#strings.capitalize(#strings.toLowerCase(userDetails.country))}"></p>
+      </div>
+      <div class="details-section-container">
+        <strong>Role: </strong>
+        <p th:text="${userDetails.role.name()}"></p>
+      </div>
+      <form th:action="@{'/users/' + ${userDetails.id} + '/change-role'}" th:method="PUT">
+        <button class="profile-actions-button">
+          <p>Change role</p>
+        </button>
+      </form>
+      <form th:action="@{'/users/' + ${userDetails.id} + '/change-status'}" th:method="PUT">
+        <button class="profile-actions-button">
+          <p th:if="${userDetails.active}" th:text="'Ban'"></p>
+          <p th:if="${!userDetails.active}" th:text="'Activate'"></p>
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+</body>
+</html>

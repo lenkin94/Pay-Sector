@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/css/common.css">
+    <link rel="stylesheet" type="text/css" href="/css/nav-top.css">
+    <link rel="stylesheet" type="text/css" href="/css/home-common.css">
+    <link rel="stylesheet" type="text/css" href="/css/home.css">
+    <link rel="stylesheet" type="text/css" href="/css/transactions.css">
+
+    <title>Loan info</title>
+</head>
+<body>
+
+<div class="nav-bar">
+  <div class="top-bar-container">
+    <nav>
+      <div class="top_navbar">
+        <div class="pay-sector-nav-bar">
+          <div class="pay-sector-nav-bar-name">Pay Sector</div>
+        </div>
+        <div class="func-block">
+          <a href="/home" class="active">
+            <p>Home</p>
+          </a>
+        </div>
+        <div class="func-block">
+          <a href="/transfers">
+            <p>Transfers</p>
+          </a>
+          <a href="/bills">
+            <p>Bills</p>
+          </a>
+          <a href="/wallet">
+            <p>Wallet</p>
+          </a>
+          <a href="/transactions">
+            <p>Transactions</p>
+          </a>
+          <a href="/loan">
+            <p>Loan</p>
+          </a>
+        </div>
+        <div class="func-block admin-func-block" th:if="${user.role.name() == 'ADMIN'}">
+          <a href="/users">
+            <p>Users</p>
+          </a>
+        </div>
+        <div class="func-block">
+          <a class="logout" href="/logout">
+            <p>Logout</p>
+          </a>
+        </div>
+      </div>
+    </nav>
+  </div>
+</div>
+
+<main>
+  <div class="home-section">
+    <div class="single-section-box home-profile-information" th:object="${loan}">
+      <div class="profile-info">
+        <h3>Loan Details</h3>
+        <div class="details-section-container">
+          <strong>Id: </strong>
+          <p th:text="${loan.id}"></p>
+        </div>
+        <div class="details-section-container">
+          <strong>Amount: </strong>
+          <p th:text="${loan.amount} + ' EUR'"></p>
+        </div>
+        <div class="details-section-container">
+          <strong>Period: </strong>
+          <p th:text="${#temporals.format(loan.startPeriod, 'dd MMM YYYY') + ' - ' + #temporals.format(loan.endPeriod, 'dd MMM YYYY')}"></p>
+        </div>
+        <div class="details-section-container">
+          <strong>Monthly interest: </strong>
+          <p th:text="${(loan.interest * 100) + '%'}"> </p>
+        </div>
+        <div class="details-section-container">
+          <strong>Monthly payment : </strong>
+          <p th:text="${loan.monthlyPayment} + ' EUR'"></p>
+        </div>
+        <div class="details-section-container">
+          <strong>Overdue amount : </strong>
+          <p th:text="${loan.overdueAmount} + ' EUR'"></p>
+        </div>
+        <div class="details-section-container">
+          <strong>Amount until full repayment: </strong>
+          <p th:text="${loan.amountUntilFUllRepayment} + ' EUR'"></p>
+        </div>
+        <div class="details-section-container">
+          <strong>Total amount to repay: </strong>
+          <p th:text="${loan.finalSum} + ' EUR'"></p>
+        </div>
+        <div class="details-section-container">
+          <strong>Loan status: </strong>
+          <p th:if="${loan.loanStatus.name() == 'ACTIVE'}" th:text="'Active'"></p>
+          <p th:if="${loan.loanStatus.name() == 'COMPLETED'}" th:text="'Completed'"></p>
+          <p th:if="${loan.loanStatus.name() == 'REFINANCED'}" th:text="'Refinanced'"></p>
+        </div>
+        <div class="details-section-container">
+          <strong>Request payment: </strong>
+          <p th:if="${loan.requestPayment == false and loan.loanStatus.name() == 'ACTIVE'}" th:text="'No'"></p>
+          <p th:if="${loan.requestPayment == true}" th:text="'Request monthly payment.'"></p>
+          <p th:if="${(loan.requestPayment == false and loan.loanStatus.name() == 'REFINANCED') or loan.loanStatus.name() == 'COMPLETED'}" th:text="'Fully repaid loan.'"></p>
+        </div>
+
+        <form th:if="${loan.requestPayment}" th:action="@{'/loan/' + ${loan.id} + '/pay'}" th:method="PUT">
+          <button class="profile-actions-button">
+            <p>Monthly payment</p>
+          </button>
+        </form>
+
+        <form th:action="@{'/loan/' + ${loan.id} + '/full-repayment'}" th:method="PUT">
+          <button class="profile-actions-button">
+            <p>Full repayment</p>
+          </button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</main>
+</body>
+</html>

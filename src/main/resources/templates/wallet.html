@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/css/common.css">
+    <link rel="stylesheet" type="text/css" href="/css/nav-top.css">
+    <link rel="stylesheet" type="text/css" href="/css/home-common.css">
+    <link rel="stylesheet" type="text/css" href="/css/home.css">
+    <link rel="stylesheet" type="text/css" href="/css/wallet.css">
+    <title>Wallet</title>
+</head>
+<body>
+
+<div class="nav-bar">
+  <div class="top-bar-container">
+    <nav>
+      <div class="top_navbar">
+        <div class="pay-sector-nav-bar">
+          <div class="pay-sector-nav-bar-name">Pay Sector</div>
+        </div>
+        <div class="func-block">
+          <a href="/home" class="active">
+            <p>Home</p>
+            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+            </svg>
+          </a>
+        </div>
+        <div class="func-block">
+
+          <a href="/transfers">
+            <p>Transfers</p>
+            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+
+            </svg>
+          </a>
+          <a href="/bills">
+            <p>Bills</p>
+            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+            </svg>
+          </a>
+          <a href="/wallet">
+            <p>Wallet</p>
+            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+            </svg>
+          </a>
+          <a href="/transactions">
+            <p>Transactions</p>
+            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+            </svg>
+          </a>
+          <a href="/loan">
+            <p>Loan</p>
+            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+
+            </svg>
+          </a>
+        </div>
+        <div class="func-block admin-func-block" th:if="${user.role.name() == 'ADMIN'}">
+          <a href="/users">
+            <p>Users</p>
+            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+
+            </svg>
+          </a>
+        </div>
+        <div class="func-block">
+          <a class="logout" href="/logout">
+            <p>Logout</p>
+            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H8m12 0-4 4m4-4-4-4M9 4H7a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h2"></path>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </nav>
+  </div>
+</div>
+
+<main>
+
+  <div class="home-section">
+    <div class="wallet-block">
+      <div class="default-label-box">
+        <p>Wallet</p>
+      </div>
+
+      <div class="wallet-balance">
+        <p class="balance" th:text="${user.wallet.balance + ' ' + user.wallet.currency}"></p>
+        <p class="available-balance-text">Available Balance</p>
+      </div>
+
+      <div class="wallet-actions">
+        <form th:action="@{'/wallet/add-funds'}" th:method="GET">
+          <button type="submit" class="profile-actions-button">
+            <p>Add funds</p>
+          </button>
+        </form>
+      </div>
+
+      <div class="details-section">
+        <div class="details-section-container">
+          <strong>Id: </strong>
+          <p th:text="${user.wallet.id}"></p>
+        </div>
+        <div class="details-section-container">
+          <strong>Created on: </strong>
+          <p th:text="${#temporals.format(user.wallet.createdOn, 'dd MMM YYYY HH:mm')}">09 Dec 2024 21:39</p>
+        </div>
+      </div>
+    </div>
+
+</main>
+
+</body>
+</html>

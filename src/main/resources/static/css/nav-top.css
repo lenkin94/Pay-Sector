@@ -1,0 +1,103 @@
+.nav-bar {
+    width: 100%;
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,.2);
+}
+
+.top-bar-container {
+    width: 100%;
+    height: 75px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
+    font-family: cursive;
+}
+
+.top_navbar {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.func-block {
+    margin-left: 16px;
+    display: flex;
+}
+
+.func-block span {
+    font-size: 16px;
+    font-weight: 300;
+    margin-bottom: 10px;
+    display: flex;
+    background: radial-gradient(ellipse at top, black, black, black);
+    background-size: 200%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    padding: 8px 12px;
+    height: 10%;
+}
+
+.func-block a {
+    display: flex;
+    text-decoration: none;
+    font-weight: 300;
+    font-size: 30px;
+    color: black;
+    padding: 10px 12px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    background: transparent;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.func-block p {
+    margin: 0;
+    align-self: center;
+    display: inline-block;
+}
+
+.func-block svg {
+    margin-left: auto;
+    margin-right: 4%;
+    width: 18px;
+}
+
+.func-block a:hover {
+    color: black;
+    font-size: 30px;
+    font-weight: 500;
+    transition: background 0.9s ease-in-out;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.func-block a.active {
+    background: radial-gradient(circle at 90% top, black);
+    color: Black;
+    font-weight: 300;
+}
+
+.func-block .logout {
+    color: black;
+}
+
+
+
+.pay-sector-nav-bar {
+    display: flex;
+    padding: 20px 0;
+    width: 100%;
+    background: radial-gradient(ellipse at top, black, black, black);
+    background-size: 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.pay-sector-nav-bar div{
+    padding: 5px 5px;
+}
+.pay-sector-nav-bar-name {
+    border-radius: 8px;
+    font-size: 30px;
+    font-weight: 300;
+    display: inline-block;
+    background: transparent;
+}
