@@ -2,7 +2,7 @@ package app.paysector.user.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import app.paysector.bill.model.Bill;
+//import app.paysector.bill.dto.Bill;
 import app.paysector.loan.model.Loan;
 import app.paysector.transaction.model.Transaction;
 import app.paysector.wallet.model.Wallet;
@@ -55,9 +55,6 @@ public class User {
     private LocalDateTime updatedAt;
 
     private boolean isActive;
-
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "owner")
-    private List<Bill> bills = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.EAGER)
     private Wallet wallet;

@@ -69,7 +69,7 @@
 
     <label for="type">Type</label>
     <select name="country" id="type" th:field="*{billType}">
-      <option th:each="type : ${T(app.paysector.bill.model.BillType).values()}" th:value="${type}" th:text="${#strings.capitalize(#strings.toLowerCase(type))}"></option>
+      <option th:each="type : ${T(app.paysector.bill.dto.BillType).values()}" th:value="${type}" th:text="${#strings.capitalize(#strings.toLowerCase(type))}"></option>
     </select>
 
       <button type="submit">Add bill</button>

@@ -1,7 +1,8 @@
 package app.paysector.web;
 
+import app.paysector.bill.dto.Bill;
 import jakarta.validation.Valid;
-import app.paysector.bill.model.Bill;
+//import app.paysector.bill.dto.Bill;
 import app.paysector.bill.service.BillService;
 import app.paysector.loan.model.Loan;
 import app.paysector.loan.service.LoanService;
@@ -82,7 +83,7 @@ public class IndexController {
 
         User user = userService.getById(authenticateUser.getUserId());
         List<Loan> loans = loanService.getLoansByOwnerId(user.getId());
-        List<Bill> bills = billService.findByOwnerId(user.getId());
+        List<Bill> bills = billService.allUserBills(authenticateUser.getUserId());
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("home");

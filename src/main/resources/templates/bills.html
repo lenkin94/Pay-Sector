@@ -82,7 +82,7 @@
           </tr>
           </thead>
           <tbody>
-          <tr th:each="bill : ${bills}">
+          <tr th:each="bill : ${bills}" th:if="${!#lists.isEmpty(bills)}">
             <td th:text="${bill.billType.name()}"></td>
             <td th:text="${bill.billNumber}"></td>
             <td>
@@ -99,7 +99,7 @@
                 </button>
               </form></td>
             <td>
-              <form th:if="${bill.isPaid() == false}" th:action="@{'/bills/' + ${bill.id} + '/remove'}" th:method="PUT">
+              <form th:action="@{'/bills/' + ${user.id} + '/' + ${bill.id} + '/remove'}" th:method="DELETE">
                 <button class="profile-actions-button">
                   <p>Remove</p>
                 </button>

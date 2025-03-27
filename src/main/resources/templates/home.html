@@ -130,7 +130,7 @@
           </tr>
           </thead>
           <tbody>
-          <tr th:each="bill : ${user.bills}" th:if="${bill.isPaid() == false}">
+          <tr th:each="bill : ${bills}" th:if="${bill.isPaid() == false}">
             <td th:text="${#strings.capitalize(#strings.toLowerCase(bill.billType.name())) + ' bill'}"></td>
             <td th:text="${bill.amount + ' EUR'}"></td>
             <td th:text="${#temporals.format(bill.endPeriod.plusMonths(1), 'dd MMM YYYY')}"></td>

@@ -1,4 +1,4 @@
-package app.paysector.bill.model;
+package app.paysector.bill.dto;
 
 public enum BillType {
     ELECTRICITY,

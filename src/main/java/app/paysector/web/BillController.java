@@ -1,13 +1,14 @@
 package app.paysector.web;
 
 
+import app.paysector.bill.dto.Bill;
 import jakarta.validation.Valid;
-import app.paysector.bill.model.Bill;
+//import app.paysector.bill.dto.Bill;
 import app.paysector.bill.service.BillService;
 import app.paysector.security.AuthenticateUser;
 import app.paysector.user.model.User;
 import app.paysector.user.service.UserService;
-import app.paysector.web.dto.AddBillRequest;
+import app.paysector.bill.dto.AddBillRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -35,7 +36,7 @@ public class BillController {
     private ModelAndView getBillsPage(@AuthenticationPrincipal AuthenticateUser authenticateUser) {
 
         User user = userService.getById(authenticateUser.getUserId());
-        List<Bill> bills = billService.findByOwnerId(authenticateUser.getUserId());
+        List<Bill> bills = billService.allUserBills(authenticateUser.getUserId());
 
 
         ModelAndView mav = new ModelAndView();
@@ -49,9 +50,7 @@ public class BillController {
 
     @PutMapping("/{id}/pay")
     private String payBill(@PathVariable UUID id, @AuthenticationPrincipal AuthenticateUser authenticateUser) {
-        User user = userService.getById(authenticateUser.getUserId());
-
-        billService.payBill(id, user);
+        billService.payBill(id, authenticateUser.getUserId());
 
         return "redirect:/bills";
     }
@@ -76,6 +75,14 @@ public class BillController {
         User user = userService.getById(authenticateUser.getUserId());
 
         billService.addBill(user, addBillRequest);
+
+        return "redirect:/bills";
+    }
+
+    @DeleteMapping("{userId}/{billId}/remove")
+    private String removeBill(@PathVariable UUID userId, @PathVariable UUID billId) {
+
+        billService.removeBill(billId, userId);
 
         return "redirect:/bills";
     }

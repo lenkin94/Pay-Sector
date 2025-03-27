@@ -1,5 +1,6 @@
 package app.paysector.web.mapper;
 
+import app.paysector.bill.dto.Bill;
 import lombok.experimental.UtilityClass;
 import app.paysector.user.model.User;
 import app.paysector.web.dto.EditProfileRequest;
