@@ -1,6 +1,9 @@
 package app.paysector.user.service;
 
 
+import app.paysector.exception.EmailAlreadyExistsException;
+import app.paysector.exception.PasswordsDoNotMatchException;
+import app.paysector.exception.UsernameAlreadyExistsException;
 import app.paysector.security.AuthenticateUser;
 import app.paysector.user.model.User;
 import app.paysector.user.model.UserRole;
@@ -10,6 +13,7 @@ import app.paysector.wallet.service.WalletService;
 import app.paysector.web.dto.ChangePasswordRequest;
 import app.paysector.web.dto.EditProfileRequest;
 import app.paysector.web.dto.RegisterRequest;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -39,21 +43,22 @@ public class UserService implements UserDetailsService {
     }
 
     @CacheEvict(value = "users", allEntries = true)
+    @Transactional
     public User registerUser(RegisterRequest registerRequest) {
         Optional<User> byUsername = userRepository.findByUsername(registerRequest.getUsername());
 
         if (byUsername.isPresent()) {
-            throw new RuntimeException("Username already exists");
+            throw new UsernameAlreadyExistsException("Username '%s' already exists".formatted(registerRequest.getUsername()));
         }
 
         Optional<User> byEmail = userRepository.findByEmail(registerRequest.getEmail());
 
         if (byEmail.isPresent()) {
-            throw new RuntimeException("Email already exists");
+            throw new EmailAlreadyExistsException("Email already exists");
         }
 
         if (!registerRequest.getPassword().equals(registerRequest.getConfirmPassword())) {
-            throw new RuntimeException("Passwords do not match");
+            throw new PasswordsDoNotMatchException("Passwords do not match");
         }
 
         User user = userRepository.save(initializeUser(registerRequest));

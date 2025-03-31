@@ -118,7 +118,7 @@ public class WalletService {
 
 
         if (isFailed) {
-            transactionService.createNewTransaction(sender,
+             transactionService.createNewTransaction(sender,
                     sender.getUsername(),
                     transferRequest.getReceiverUsername(),
                     transferRequest.getAmount(),
@@ -128,7 +128,11 @@ public class WalletService {
                     TransactionStatus.FAILED,
                     transferDescription,
                     failureReason);
+
+            return;
         }
+
+
 
 
         User receiver = optionalReceiver.get();
@@ -162,6 +166,7 @@ public class WalletService {
                 transferDescription,
                 null
         );
+
     }
 
     public void updateWalletDeposit(UUID walletId, BigDecimal amount) {

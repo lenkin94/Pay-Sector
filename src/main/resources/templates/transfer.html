@@ -89,12 +89,15 @@
 
             <label for="receiver">Receiver Username</label>
             <input type="text" id="receiver" placeholder="Enter receiver username" required="" th:field="*{receiverUsername}">
+            <p class="alert-warning" th:if="${#fields.hasErrors('receiverUsername')}" th:errors="*{receiverUsername}"></p>
 
             <label for="amount">Amount</label>
             <input type="number" id="amount" placeholder="Enter amount to send" required="" th:field="*{amount}">
+            <p class="alert-warning" th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}"></p>
 
             <label for="description">Description</label>
             <input type="text" id="description" placeholder="Transfer description" th:field="*{transferDescription}">
+
 
             <button type="submit" class="profile-actions-button">
               <p>Send</p>

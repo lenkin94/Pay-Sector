@@ -1,5 +1,6 @@
 package app.paysector.web;
 
+import app.paysector.transaction.model.Transaction;
 import jakarta.validation.Valid;
 import app.paysector.loan.model.Loan;
 import app.paysector.loan.service.LoanService;
@@ -96,25 +97,27 @@ public class LoanController {
     @PutMapping("{loanId}/pay")
     public String monthlyPayment(@PathVariable UUID loanId, @AuthenticationPrincipal AuthenticateUser authenticateUser) {
 
-        loanService.monthlyPayment(loanId, authenticateUser.getUserId());
+        Transaction monthlyPayment = loanService.monthlyPayment(loanId, authenticateUser.getUserId());
 
-        return "redirect:/loan";
+        return "redirect:/transactions";
     }
 
     @PutMapping("{loanId}/full-repayment")
     public String fullRepayment(@PathVariable UUID loanId, @AuthenticationPrincipal AuthenticateUser authenticateUser) {
 
-        loanService.fullRepayment(loanId, authenticateUser.getUserId());
+        Transaction fullRepayment = loanService.fullRepayment(loanId, authenticateUser.getUserId());
 
-        return "redirect:/loan";
+        return "redirect:/transactions";
     }
 
     @GetMapping("refinance-loan")
     public ModelAndView getRefinanceLoanPage(@AuthenticationPrincipal AuthenticateUser authenticateUser, LoanRequest loanRequest) {
         User user = userService.getById(authenticateUser.getUserId());
+        Loan loanToRefinance = loanService.getLoansByOwnerId(authenticateUser.getUserId()).get(0);
         ModelAndView mav = new ModelAndView("refinance-loan");
         mav.addObject("loanRequest", loanRequest);
         mav.addObject("user", user);
+        mav.addObject("loanToRefinance", loanToRefinance);
 
         return mav;
     }

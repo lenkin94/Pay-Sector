@@ -2,7 +2,6 @@ package app.paysector.web;
 
 import app.paysector.bill.dto.Bill;
 import jakarta.validation.Valid;
-//import app.paysector.bill.dto.Bill;
 import app.paysector.bill.service.BillService;
 import app.paysector.loan.model.Loan;
 import app.paysector.loan.service.LoanService;
@@ -43,16 +42,16 @@ public class IndexController {
 
 
     @GetMapping("/register")
-    public ModelAndView getRegisterPage(RegisterRequest registerRequest) {
+    public ModelAndView getRegisterPage() {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("register");
-        modelAndView.addObject("registerRequest", registerRequest);
+        modelAndView.addObject("registerRequest", new RegisterRequest());
 
         return modelAndView;
     }
 
     @PostMapping("/register")
-    public ModelAndView registerNewUser(@Valid RegisterRequest registerRequest, BindingResult bindingResult) {
+    public ModelAndView registerUser(@Valid RegisterRequest registerRequest, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
             return new ModelAndView("register");

@@ -91,7 +91,7 @@
             </td>
             <td th:text="${bill.amount + ' EUR'}"></td>
             <td th:text="${#temporals.format(bill.startPeriod, 'dd MMM YYYY') + ' - ' + #temporals.format(bill.endPeriod, 'dd MMM YYYY')}"></td>
-            <td th:text="${bill.isPaid() == false ? '' : #temporals.format(bill.payedOn, 'dd MMM YYYY')}"></td>
+            <td th:text="${bill.isPaid() == false ? '' : #temporals.format(bill.paidOn, 'dd MMM YYYY')}"></td>
             <td>
               <form th:if="${bill.isPaid() == false}" th:action="@{'/bills/' + ${bill.id} + '/pay'}" th:method="PUT">
                 <button class="profile-actions-button">

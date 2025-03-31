@@ -27,6 +27,6 @@ public class Bill {
 
     private boolean isPaid;
 
-    private LocalDate payedOn;
+    private LocalDate paidOn;
 }
 

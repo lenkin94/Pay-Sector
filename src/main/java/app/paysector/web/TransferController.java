@@ -29,27 +29,27 @@ public class TransferController {
     }
 
     @GetMapping
-    public ModelAndView getTransferPage(@AuthenticationPrincipal AuthenticateUser authenticateUser, TransferRequest transferRequest) {
+    public ModelAndView getTransferPage(@AuthenticationPrincipal AuthenticateUser authenticateUser) {
 
         User user = userService.getById(authenticateUser.getUserId());
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("transfer");
         modelAndView.addObject("user", user);
-        modelAndView.addObject("transferRequest", transferRequest);
+        modelAndView.addObject("transferRequest", new TransferRequest());
 
         return modelAndView;
     }
 
     @PostMapping
-    public String transfer(@Valid TransferRequest transferRequest, @AuthenticationPrincipal AuthenticateUser authenticateUser, BindingResult bindingResult) {
+    public ModelAndView transfer(@Valid TransferRequest transferRequest, @AuthenticationPrincipal AuthenticateUser authenticateUser, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            return "transfer";
+            return new ModelAndView("transfer");
         }
 
         walletService.transferFunds(authenticateUser.getUserId(), transferRequest);
 
-        return "redirect:/transactions";
+        return new ModelAndView("redirect:/transactions");
     }
 }

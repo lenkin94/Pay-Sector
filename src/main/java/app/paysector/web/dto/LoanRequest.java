@@ -20,8 +20,7 @@ public class LoanRequest {
     @NotNull(message = "You must type a loan period!")
     private int periodInMonths;
 
-    @Min(1000)
-    @Max(100000)
+
     @NotNull(message = "You must type amount needed!")
     private BigDecimal amount;
 }

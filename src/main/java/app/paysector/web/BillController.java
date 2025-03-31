@@ -2,8 +2,8 @@ package app.paysector.web;
 
 
 import app.paysector.bill.dto.Bill;
+import app.paysector.transaction.model.Transaction;
 import jakarta.validation.Valid;
-//import app.paysector.bill.dto.Bill;
 import app.paysector.bill.service.BillService;
 import app.paysector.security.AuthenticateUser;
 import app.paysector.user.model.User;
@@ -50,7 +50,7 @@ public class BillController {
 
     @PutMapping("/{id}/pay")
     private String payBill(@PathVariable UUID id, @AuthenticationPrincipal AuthenticateUser authenticateUser) {
-        billService.payBill(id, authenticateUser.getUserId());
+        Transaction payBill = billService.payBill(id, authenticateUser.getUserId());
 
         return "redirect:/bills";
     }

@@ -5,6 +5,7 @@ import app.paysector.bill.BillClient;
 //import app.paysector.bill.repository.BillRepository;
 import app.paysector.bill.dto.Bill;
 import app.paysector.bill.dto.GetAllUserBills;
+import app.paysector.transaction.model.Transaction;
 import app.paysector.transaction.model.TransactionStatus;
 import app.paysector.transaction.model.TransactionType;
 import app.paysector.transaction.service.TransactionService;
@@ -68,7 +69,7 @@ public class BillService {
 
 
     @Transactional
-    public void payBill(UUID billId, UUID userId) {
+    public Transaction payBill(UUID billId, UUID userId) {
         User user = userService.getById(userId);
 
         ResponseEntity<Bill> response = billClient.getBill(billId);
@@ -81,7 +82,7 @@ public class BillService {
         String transactionDescription = "Paying %s bill with account number %s.".formatted(bill.getBillType(), bill.getBillNumber());
 
         if (wallet.getBalance().compareTo(bill.getAmount()) < 0) {
-            transactionService.createNewTransaction(user,
+            return transactionService.createNewTransaction(user,
                     user.getUsername(),
                     PAYSECTOR_LTD,
                     bill.getAmount(),
@@ -91,7 +92,6 @@ public class BillService {
                     TransactionStatus.FAILED,
                     transactionDescription,
                     failureReason);
-            return;
         }
 
 
@@ -103,7 +103,7 @@ public class BillService {
             log.error("Paying bill failed");
         }
 
-        transactionService.createNewTransaction(user,
+        return transactionService.createNewTransaction(user,
                 user.getUsername(),
                 PAYSECTOR_LTD,
                 bill.getAmount(),

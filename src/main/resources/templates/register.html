@@ -30,6 +30,7 @@
             <label for="username">Username</label>
             <input type="text" placeholder="Username" id="username" th:field="*{username}" required>
             <p class="alert-warning" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></p>
+            <p class="alert-warning" th:text="${usernameAlreadyExistsMessage}"></p>
 
             <label for="firstName">First name</label>
             <input type="text" placeholder="First name" id="firstName" th:field="*{firstName}" required>
@@ -46,10 +47,12 @@
             <label for="password">Confirm password</label>
             <input type="password" placeholder="Confirm password" th:field="*{confirmPassword}" required>
             <p class="alert-warning" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></p>
+            <p class="alert-warning" th:text="${passwordsDoNotMatchMessage}"></p>
 
             <label for="email">Email</label>
             <input type="email" placeholder="Email" id="email" th:field="*{email}" required>
             <p class="alert-warning" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+            <p class="alert-warning" th:text="${emailAlreadyExistsMessage}"></p>
 
             <label for="country">Country</label>
             <select name="country" id="country" th:field="*{country}">

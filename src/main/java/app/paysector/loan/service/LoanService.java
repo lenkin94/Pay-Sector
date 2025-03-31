@@ -1,5 +1,6 @@
 package app.paysector.loan.service;
 
+import app.paysector.transaction.model.Transaction;
 import jakarta.transaction.Transactional;
 import app.paysector.loan.model.Loan;
 import app.paysector.loan.model.LoanStatus;
@@ -41,18 +42,24 @@ public class LoanService {
         this.transactionService = transactionService;
     }
 
-    private boolean isFailedTransaction(User user, Loan loan, String transactionDescription, Wallet wallet, BigDecimal toPay) {
-        boolean isFailed = false;
-        String failureReason = "";
+    private boolean isFailedTransaction(Wallet wallet, BigDecimal toPay) {
+        return wallet.getBalance().compareTo(toPay) < 0;
+    }
 
-        if (wallet.getBalance().compareTo(toPay) < 0) {
-            failureReason = "Insufficient funds to pay loan with id '%s'".formatted(loan.getId());
-            isFailed = true;
-        }
 
-        if (isFailed) {
-             transactionService.createNewTransaction(
-                     user,
+    public Transaction fullRepayment(UUID loanId, UUID userId) {
+        User user = userService.getById(userId);
+        Loan loan = getById(loanId);
+        Wallet wallet = walletService.findByOwnerId(userId);
+
+        BigDecimal toPay = loan.getAmountUntilFUllRepayment();
+
+        String failureReason = "Insufficient funds to pay loan with id '%s'".formatted(loan.getId());
+        String transactionDescription = "Full repayment of a loan with id '%s' for %.2f EUR".formatted(loan.getId(), loan.getAmountUntilFUllRepayment());
+
+        if (isFailedTransaction(wallet, toPay)) {
+            return transactionService.createNewTransaction(
+                    user,
                     user.getUsername(),
                     PAYSECTOR_LTD,
                     toPay,
@@ -62,22 +69,6 @@ public class LoanService {
                     TransactionStatus.FAILED,
                     transactionDescription,
                     failureReason);
-        }
-        return isFailed;
-    }
-
-
-    public void fullRepayment(UUID loanId, UUID userId) {
-        User user = userService.getById(userId);
-        Loan loan = getById(loanId);
-        Wallet wallet = walletService.findByOwnerId(userId);
-
-        BigDecimal toPay = loan.getAmountUntilFUllRepayment();
-
-        String transactionDescription = "Full repayment of a loan with id '%s' for %.2f EUR".formatted(loan.getId(), loan.getAmountUntilFUllRepayment());
-
-        if (isFailedTransaction(user, loan, transactionDescription, wallet, toPay)) {
-            throw new RuntimeException("Payment denied!");
         }
 
         walletService.updateWalletWithdrawal(wallet.getId(), toPay);
@@ -89,7 +80,7 @@ public class LoanService {
 
         loanRepository.save(loan);
 
-        transactionService.createNewTransaction(
+        return transactionService.createNewTransaction(
                 user,
                 user.getUsername(),
                 PAYSECTOR_LTD,
@@ -103,18 +94,29 @@ public class LoanService {
     }
 
 
-    public void monthlyPayment(UUID loanId, UUID userId) {
+    public Transaction monthlyPayment(UUID loanId, UUID userId) {
         Loan loan = getById(loanId);
         User user = userService.getById(userId);
 
+        String failureReason = "Insufficient funds to pay loan with id '%s'".formatted(loan.getId());
         String transactionDescription = "Monthly payment for %.2f EUR for loan with id '%s'".formatted(loan.getMonthlyPayment(), loan.getId());
 
         Wallet wallet = walletService.findByOwnerId(userId);
 
         BigDecimal toPay = loan.getMonthlyPayment();
 
-        if (isFailedTransaction(user, loan, transactionDescription, wallet, toPay)) {
-            throw new RuntimeException("Payment denied!");
+        if (isFailedTransaction(wallet, toPay)) {
+            return transactionService.createNewTransaction(
+                    user,
+                    user.getUsername(),
+                    PAYSECTOR_LTD,
+                    toPay,
+                    wallet.getBalance(),
+                    wallet.getCurrency(),
+                    TransactionType.WITHDRAWAL,
+                    TransactionStatus.FAILED,
+                    transactionDescription,
+                    failureReason);
         }
 
         walletService.updateWalletWithdrawal(wallet.getId(), toPay);
@@ -133,7 +135,7 @@ public class LoanService {
         loanRepository.save(loan);
 
 
-        transactionService.createNewTransaction(
+        return transactionService.createNewTransaction(
                 user,
                 user.getUsername(),
                 PAYSECTOR_LTD,

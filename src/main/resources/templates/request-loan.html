@@ -67,7 +67,7 @@
       <p class="alert-warning" th:if="${#fields.hasErrors('periodInMonths')}" th:errors="*{periodInMonths}"></p>
 
     <label for="amount">Amount</label>
-    <input type="number" id="amount" placeholder="1000 - 100000 EUR" min="1000" step="10" max="100000" required="" th:field="*{amount}">
+    <input type="number" id="amount" placeholder="1000 - 100000 EUR" min="1000" step="10" required="" th:field="*{amount}">
       <p class="alert-warning" th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}"></p>
 
     <button type="submit">Get offer</button>

@@ -2,7 +2,6 @@ package app.paysector.user.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-//import app.paysector.bill.dto.Bill;
 import app.paysector.loan.model.Loan;
 import app.paysector.transaction.model.Transaction;
 import app.paysector.wallet.model.Wallet;
