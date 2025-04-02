@@ -95,7 +95,7 @@ public class BillService {
         }
 
 
-        walletService.updateWalletWithdrawal(wallet.getId(), bill.getAmount());
+        walletService.updateWalletWithdrawal(wallet, bill.getAmount());
 
         try {
             billClient.payBill(billId);

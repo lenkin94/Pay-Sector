@@ -17,7 +17,6 @@ public class WebMvcConfiguration {
         http
                 .authorizeHttpRequests(matchers -> matchers
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                        .requestMatchers("/users").hasRole("ADMIN")
                         .requestMatchers("/", "/register").permitAll()
                         .anyRequest().authenticated()
                 )

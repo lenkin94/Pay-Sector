@@ -64,7 +64,7 @@ public class WalletController {
 
         Wallet wallet = walletService.findByOwnerId(authenticateUser.getUserId());
 
-        walletService.addFunds(wallet.getId(), addFundsRequest);
+        walletService.addFunds(wallet, addFundsRequest);
 
         return "redirect:/wallet";
     }

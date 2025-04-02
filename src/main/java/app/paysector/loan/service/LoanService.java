@@ -71,7 +71,7 @@ public class LoanService {
                     failureReason);
         }
 
-        walletService.updateWalletWithdrawal(wallet.getId(), toPay);
+        walletService.updateWalletWithdrawal(wallet, toPay);
         loan.setAmountUntilFUllRepayment(BigDecimal.ZERO);
         loan.setLastPaymentDate(LocalDateTime.now());
         loan.setRequestPayment(false);
@@ -119,7 +119,7 @@ public class LoanService {
                     failureReason);
         }
 
-        walletService.updateWalletWithdrawal(wallet.getId(), toPay);
+        walletService.updateWalletWithdrawal(wallet, toPay);
         loan.setMonthlyPayment(loan.getMonthlyPayment().subtract(loan.getOverdueAmount()));
         loan.setPaymentDate(loan.getPaymentDate().plusDays(30));
         loan.setAmountUntilFUllRepayment(loan.getAmountUntilFUllRepayment().subtract(toPay));
@@ -149,11 +149,9 @@ public class LoanService {
     }
 
 
-    public void createLoan(UUID userId, LoanRequest loanRequest) {
-        Wallet wallet = walletService.findByOwnerId(userId);
-        User user = userService.getById(userId);
+    public Loan createLoan(User user, LoanRequest loanRequest, Wallet wallet) {
 
-        walletService.updateWalletDeposit(wallet.getId(), loanRequest.getAmount());
+        walletService.updateWalletDeposit(wallet, loanRequest.getAmount());
 
         String transactionDescription = "Loan from Pay Sector LTD for %.2f EUR.".formatted(loanRequest.getAmount());
 
@@ -169,12 +167,11 @@ public class LoanService {
                 transactionDescription,
                 null
         );
-
-        loanRepository.save(initializeLoan(userId, loanRequest));
+        return loanRepository.save(initializeLoan(user, loanRequest));
     }
 
-    public Loan initializeLoan(UUID userId, LoanRequest loanRequest) {
-        User user = userService.getById(userId);
+    public Loan initializeLoan(User user, LoanRequest loanRequest) {
+
 
         double interest = calculateInterest(user);
 
@@ -205,7 +202,7 @@ public class LoanService {
         Wallet wallet = walletService.findByOwnerId(userId);
         User user = userService.getById(userId);
 
-        Loan refincanceLoan = initializeLoan(userId, loanRequest);
+        Loan refincanceLoan = initializeLoan(user, loanRequest);
 
         Loan currentLoan = getLoansByOwnerId(userId).get(0);
 
@@ -217,7 +214,7 @@ public class LoanService {
 
 
 
-        walletService.updateWalletDeposit(wallet.getId(), refinancedAmount);
+        walletService.updateWalletDeposit(wallet, refinancedAmount);
 
         loanRepository.save(currentLoan);
 

@@ -1,6 +1,8 @@
 package app.paysector.web;
 
 import app.paysector.transaction.model.Transaction;
+import app.paysector.wallet.model.Wallet;
+import app.paysector.wallet.service.WalletService;
 import jakarta.validation.Valid;
 import app.paysector.loan.model.Loan;
 import app.paysector.loan.service.LoanService;
@@ -24,11 +26,13 @@ public class LoanController {
 
     private final UserService userService;
     private final LoanService loanService;
+    private final WalletService walletService;
 
     @Autowired
-    public LoanController(UserService userService, LoanService loanService) {
+    public LoanController(UserService userService, LoanService loanService, WalletService walletService) {
         this.userService = userService;
         this.loanService = loanService;
+        this.walletService = walletService;
     }
 
     @GetMapping
@@ -60,7 +64,7 @@ public class LoanController {
     @GetMapping("offer-details")
     public ModelAndView getOfferDetailsPage(@AuthenticationPrincipal AuthenticateUser authenticateUser, LoanRequest loanRequest) {
         User user = userService.getById(authenticateUser.getUserId());
-        Loan loanDetails = loanService.initializeLoan(authenticateUser.getUserId(), loanRequest);
+        Loan loanDetails = loanService.initializeLoan(user, loanRequest);
 
         ModelAndView mav = new ModelAndView("offer-details");
         mav.addObject("user", user);
@@ -72,11 +76,13 @@ public class LoanController {
     @PostMapping("accept-details")
     public String acceptLoanDetails(@AuthenticationPrincipal AuthenticateUser authenticateUser, @Valid LoanRequest loanRequest, BindingResult bindingResult) {
 
+
         if (bindingResult.hasErrors()) {
             return "redirect:/loan/request-loan";
         }
-
-        loanService.createLoan(authenticateUser.getUserId(), loanRequest);
+        User user = userService.getById(authenticateUser.getUserId());
+        Wallet wallet = walletService.findByOwnerId(user.getId());
+        Loan loan = loanService.createLoan(user, loanRequest, wallet);
 
 
         return "redirect:/loan";

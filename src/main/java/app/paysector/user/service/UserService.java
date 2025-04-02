@@ -63,7 +63,7 @@ public class UserService implements UserDetailsService {
 
         User user = userRepository.save(initializeUser(registerRequest));
 
-        Wallet wallet = walletService.createWallet(user.getId());
+        Wallet wallet = walletService.createWallet(user);
 
         user.setWallet(wallet);
 
@@ -131,7 +131,7 @@ public class UserService implements UserDetailsService {
 
         if (!passwordEncoder.matches(changePasswordRequest.getOldPassword(), user.getPassword()) ||
                 !changePasswordRequest.getNewPassword().equals(changePasswordRequest.getConfirmPassword())) {
-            throw new RuntimeException("Passwords do not match");
+            throw new PasswordsDoNotMatchException("Passwords do not match");
         }
 
         user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
