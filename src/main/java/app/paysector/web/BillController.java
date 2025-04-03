@@ -38,12 +38,10 @@ public class BillController {
         User user = userService.getById(authenticateUser.getUserId());
         List<Bill> bills = billService.allUserBills(authenticateUser.getUserId());
 
-
         ModelAndView mav = new ModelAndView();
         mav.setViewName("bills");
         mav.addObject("bills", bills);
         mav.addObject("user", user);
-
 
         return mav;
     }

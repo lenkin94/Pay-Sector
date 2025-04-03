@@ -62,10 +62,9 @@ public class LoanServiceUTest {
                 .build();
 
 
-
         loanService.createLoan(user, request, wallet);
 
-        assertThat(loanRepository.findAll().size()).isEqualTo(1);
+        assertThat(user.getLoans().size()).isEqualTo(1);
 
     }
 }

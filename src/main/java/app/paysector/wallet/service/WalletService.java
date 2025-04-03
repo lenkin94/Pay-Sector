@@ -34,7 +34,6 @@ public class WalletService {
 
     public Wallet createWallet(User user) {
 
-
         Wallet wallet = Wallet.builder()
                 .owner(user)
                 .balance(new BigDecimal(0))
@@ -50,10 +49,7 @@ public class WalletService {
 
     @Transactional
     public void addFunds(Wallet wallet, AddFundsRequest addFundsRequest) {
-
-
         String transactionDescription = "%.2f EUR added to wallet".formatted(addFundsRequest.getAmount().doubleValue());
-
 
         wallet.setBalance(wallet.getBalance().add(addFundsRequest.getAmount()));
         wallet.setUpdatedOn(LocalDateTime.now());
@@ -89,13 +85,13 @@ public class WalletService {
 
         if (transferRequest.getTransferDescription().isEmpty()) {
             transferDescription = "Transfer from '%s' to '%s', for %.2f EUR".formatted(sender.getUsername(), transferRequest.getReceiverUsername(), transferRequest.getAmount());
+        } else {
+            transferDescription = transferRequest.getTransferDescription();
         }
 
         Wallet senderWallet = walletRepository.findByOwnerId(sender.getId());
 
         Optional<Wallet> optionalReceiver = walletRepository.findByOwnerUsername(transferRequest.getReceiverUsername());
-
-
 
         if (optionalReceiver.isEmpty()) {
             isFailed = true;
@@ -106,7 +102,6 @@ public class WalletService {
             failureReason = "Insufficient funds to transfer %.2f EUR to %s".formatted(transferRequest.getAmount(), transferRequest.getReceiverUsername());
             isFailed = true;
         }
-
 
         if (isFailed) {
              return transactionService.createNewTransaction(sender,
@@ -121,16 +116,10 @@ public class WalletService {
                     failureReason);
         }
 
-
-
-
         Wallet receiverWallet = optionalReceiver.get();
-
 
         updateWalletDeposit(receiverWallet, transferRequest.getAmount());
         updateWalletWithdrawal(senderWallet, transferRequest.getAmount());
-
-
 
         Transaction receiverTransaction = transactionService.createNewTransaction(
                 receiverWallet.getOwner(),

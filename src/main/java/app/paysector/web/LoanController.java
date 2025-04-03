@@ -76,7 +76,6 @@ public class LoanController {
     @PostMapping("accept-details")
     public String acceptLoanDetails(@AuthenticationPrincipal AuthenticateUser authenticateUser, @Valid LoanRequest loanRequest, BindingResult bindingResult) {
 
-
         if (bindingResult.hasErrors()) {
             return "redirect:/loan/request-loan";
         }
@@ -119,7 +118,7 @@ public class LoanController {
     @GetMapping("refinance-loan")
     public ModelAndView getRefinanceLoanPage(@AuthenticationPrincipal AuthenticateUser authenticateUser, LoanRequest loanRequest) {
         User user = userService.getById(authenticateUser.getUserId());
-        Loan loanToRefinance = loanService.getLoansByOwnerId(authenticateUser.getUserId()).get(0);
+        Loan loanToRefinance = loanService.getLoanToRefinance(loanService.getLoansByOwnerId(user.getId()));
         ModelAndView mav = new ModelAndView("refinance-loan");
         mav.addObject("loanRequest", loanRequest);
         mav.addObject("user", user);
@@ -132,9 +131,7 @@ public class LoanController {
     public ModelAndView getRefinanceDetailsPage(@AuthenticationPrincipal AuthenticateUser authenticateUser, LoanRequest loanRequest) {
         User user = userService.getById(authenticateUser.getUserId());
         Loan loanDetails = loanService.initializeRefinance(authenticateUser.getUserId(), loanRequest);
-
-        List<Loan> loans = loanService.getLoansByOwnerId(authenticateUser.getUserId());
-        Loan loanToRefinance = loans.get(0);
+        Loan loanToRefinance = loanService.getLoanToRefinance(loanService.getLoansByOwnerId(authenticateUser.getUserId()));
 
         ModelAndView mav = new ModelAndView("refinance-details");
         mav.addObject("loanDetails", loanDetails);

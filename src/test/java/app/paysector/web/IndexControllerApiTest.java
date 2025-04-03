@@ -1,6 +1,8 @@
 package app.paysector.web;
 
 import app.paysector.bill.service.BillService;
+import app.paysector.exception.EmailAlreadyExistsException;
+import app.paysector.exception.UsernameAlreadyExistsException;
 import app.paysector.loan.service.LoanService;
 import app.paysector.security.AuthenticateUser;
 import app.paysector.user.model.UserRole;
@@ -55,7 +57,6 @@ public class IndexControllerApiTest {
                 .andExpect(model().attributeExists("registerRequest"));
 
     }
-
     @Test
     void getRequestToLoginEndpoint_returnLoginPage() throws Exception {
         MockHttpServletRequestBuilder request = get("/login");
@@ -66,12 +67,8 @@ public class IndexControllerApiTest {
                 .andExpect(model().attributeExists("loginRequest"));
 
     }
-
-
     @Test
     void getRequestToLoginEndpointWithErrorParameter_shouldReturnLoginViewAndErrorMessageAttribute() throws Exception {
-
-
         MockHttpServletRequestBuilder request = get("/login").param("error", "");
 
         mockMvc.perform(request)
@@ -95,6 +92,47 @@ public class IndexControllerApiTest {
         mockMvc.perform(request)
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/login"));
+        verify(userService, times(1)).registerUser(any());
+    }
+
+    @Test
+    void postRequestToRegisterEndpointWhenUsernameAlreadyExist_thenRedirectToRegister() throws Exception {
+
+        when(userService.registerUser(any())).thenThrow(new UsernameAlreadyExistsException("Username already exist!"));
+        MockHttpServletRequestBuilder request = post("/register")
+                .formField("username", "lenkin")
+                .formField("password", "asdasd")
+                .formField("confirmPassword", "asdasd")
+                .formField("firstName", "Borislav")
+                .formField("lastName", "Solakov")
+                .formField("email", "lenkin@mail.bg")
+                .formField("country", "BULGARIA")
+                .with(csrf());
+
+        mockMvc.perform(request)
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/register"));
+        verify(userService, times(1)).registerUser(any());
+    }
+
+    @Test
+    void postRequestToRegisterEndpointWhenEmailAlreadyExist_thenRedirectToRegister() throws Exception {
+
+        when(userService.registerUser(any())).thenThrow(new EmailAlreadyExistsException("Email already exist!"));
+        MockHttpServletRequestBuilder request = post("/register")
+                .formField("username", "lenkin")
+                .formField("password", "asdasd")
+                .formField("confirmPassword", "asdasd")
+                .formField("firstName", "Borislav")
+                .formField("lastName", "Solakov")
+                .formField("email", "lenkin@mail.bg")
+                .formField("country", "BULGARIA")
+                .with(csrf());
+
+
+        mockMvc.perform(request)
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/register"));
         verify(userService, times(1)).registerUser(any());
     }
 

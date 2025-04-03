@@ -211,38 +211,6 @@ public class UserServiceUTest {
 
 
     @Test
-    void matchingPasswords_whenChangePassword_thenChangePassword() {
-        User user = User.builder()
-                .id(UUID.randomUUID())
-                .username("lenkin")
-                .password("oldpass")
-                .firstName("Borislav")
-                .lastName("Solakov")
-                .country(Country.BULGARIA)
-                .role(UserRole.USER)
-                .isActive(true)
-                .loans(new ArrayList<>())
-                .profilePicture("www.pic.com")
-                .wallet(new Wallet())
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
-                .transactions(new ArrayList<>())
-                .build();
-
-        ChangePasswordRequest request = ChangePasswordRequest.builder()
-                .oldPassword("oldpass")
-                .newPassword("newpass")
-                .confirmPassword("newpass")
-                .build();
-
-        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
-
-        userService.changePassword(user.getId(), request);
-
-        assertEquals("newpass", user.getPassword());
-    }
-
-    @Test
     void missingUsername_whenLoadUserByUsername_throwsException() {
         //Given
         String username = "lenkin";

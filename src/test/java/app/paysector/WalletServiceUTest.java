@@ -155,7 +155,7 @@ public class WalletServiceUTest {
     }
 
     @Test
-    void successfulTransfer_whenTransferFunds_transferFunds_success() {
+    void successfulTransferWithoutDescription_whenTransferFunds_transferFunds_success() {
 
         //Given
         UUID senderId = UUID.randomUUID();
@@ -202,6 +202,57 @@ public class WalletServiceUTest {
         assertThat(receiverWallet.getBalance()).isEqualTo(BigDecimal.valueOf(1000));
         verify(walletRepository, times(2)).save(any());
     }
+
+    @Test
+    void successfulTransferWithDescription_whenTransferFunds_transferFunds_success() {
+
+        //Given
+        UUID senderId = UUID.randomUUID();
+        Wallet senderWallet = Wallet.builder()
+                .id(UUID.randomUUID())
+                .balance(BigDecimal.valueOf(1000))
+                .currency(Currency.getInstance("EUR"))
+                .createdOn(LocalDateTime.now())
+                .updatedOn(LocalDateTime.now())
+                .build();
+        User sender = User.builder()
+                .username("lenkin")
+                .id(senderId)
+                .wallet(senderWallet)
+                .build();
+
+        User receiver = User.builder()
+                .username("solakov")
+                .id(senderId)
+                .build();
+        Wallet receiverWallet = Wallet.builder()
+                .id(UUID.randomUUID())
+                .balance(BigDecimal.valueOf(0))
+                .currency(Currency.getInstance("EUR"))
+                .owner(receiver)
+                .createdOn(LocalDateTime.now())
+                .updatedOn(LocalDateTime.now())
+                .build();
+
+        TransferRequest request = TransferRequest.builder()
+                .receiverUsername("asd")
+                .amount(BigDecimal.valueOf(1000))
+                .transferDescription("zemi")
+                .build();
+
+        when(walletRepository.findByOwnerId(senderId)).thenReturn(senderWallet);
+        when(walletRepository.findByOwnerUsername(request.getReceiverUsername())).thenReturn(Optional.of(receiverWallet));
+
+        //When
+        walletService.transferFunds(sender, request);
+
+        //Then
+        assertThat(senderWallet.getBalance()).isEqualTo(BigDecimal.valueOf(0));
+        assertThat(receiverWallet.getBalance()).isEqualTo(BigDecimal.valueOf(1000));
+        verify(walletRepository, times(2)).save(any());
+    }
+
+
 
     @Test
     void updateWalletWithdrawal() {

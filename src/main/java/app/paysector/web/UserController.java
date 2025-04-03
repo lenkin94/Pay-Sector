@@ -53,7 +53,7 @@ public class UserController {
             ModelAndView modelAndView = new ModelAndView();
             modelAndView.setViewName("edit-profile");
             modelAndView.addObject("user", user);
-            modelAndView.addObject("userEditRequest", editProfileRequest);
+            modelAndView.addObject("editProfileDetails", editProfileRequest);
             return modelAndView;
         }
 
@@ -101,6 +101,7 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/details")
+    @PreAuthorize("hasRole('ADMIN')")
     public ModelAndView getUserDetails(@AuthenticationPrincipal AuthenticateUser authenticateUser,@PathVariable UUID userId) {
 
         User userDetails = userService.getById(userId);
@@ -114,6 +115,7 @@ public class UserController {
     }
 
     @PutMapping("/{userId}/change-status")
+    @PreAuthorize("hasRole('ADMIN')")
     public String changeStatus(@PathVariable UUID userId) {
 
         userService.changeStatus(userId);
@@ -122,6 +124,7 @@ public class UserController {
     }
 
     @PutMapping("/{userId}/change-role")
+    @PreAuthorize("hasRole('ADMIN')")
     public String changeRole(@PathVariable UUID userId) {
 
         userService.changeRole(userId);

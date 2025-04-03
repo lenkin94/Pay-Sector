@@ -297,4 +297,7 @@ public class LoanService {
         loanRepository.save(loan);
     }
 
+    public Loan getLoanToRefinance(List<Loan> loans) {
+        return loans.get(0);
+    }
 }

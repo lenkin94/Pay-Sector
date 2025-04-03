@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 import static app.paysector.web.TestBuilder.*;
@@ -146,6 +147,8 @@ public class LoanControllerApiTest {
         when(loanService.getById(any())).thenReturn(randomLoan());
         when(loanService.fullRepayment(any(), any())).thenReturn(randomTransaction());
 
+
+
         UUID userId = UUID.randomUUID();
         AuthenticateUser principal = new AuthenticateUser(userId, "lenkin", "asdasd", UserRole.USER, true);
         MockHttpServletRequestBuilder request = put("/loan/{loanId}/full-repayment", randomLoan().getId())
@@ -158,22 +161,81 @@ public class LoanControllerApiTest {
     }
 
     @Test
-    void getAuthenticatedRequestRefinanceEndpoint_returnRequestRefinancePage() throws Exception {
-
+    void putRequestMonthlyRepaymentLoan_returnSuccessfullyMonthlyPayment() throws Exception {
         when(userService.getById(any())).thenReturn(randomUser());
         when(loanService.getById(any())).thenReturn(randomLoan());
-        when(loanService.getLoansByOwnerId(any()).get(0)).thenReturn(randomLoan());
+        when(loanService.monthlyPayment(any(), any())).thenReturn(randomTransaction());
+
+
 
         UUID userId = UUID.randomUUID();
         AuthenticateUser principal = new AuthenticateUser(userId, "lenkin", "asdasd", UserRole.USER, true);
-        MockHttpServletRequestBuilder request = get("/loan/request-refinance")
+        MockHttpServletRequestBuilder request = put("/loan/{loanId}/pay", randomLoan().getId())
+                .with(user(principal))
+                .with(csrf());
+
+        mockMvc.perform(request)
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/transactions"));
+    }
+
+    @Test
+    void getAuthenticatedRequestRefinanceEndpoint_returnRequestRefinancePage() throws Exception {
+        when(userService.getById(any())).thenReturn(randomUser());
+        when(loanService.getLoanToRefinance(any())).thenReturn(randomLoan());
+
+        UUID userId = UUID.randomUUID();
+        AuthenticateUser principal = new AuthenticateUser(userId, "lenkin", "asdasd", UserRole.USER, true);
+        MockHttpServletRequestBuilder request = get("/loan/refinance-loan")
                 .with(user(principal));
 
         mockMvc.perform(request)
                 .andExpect(status().isOk())
-                .andExpect(view().name("request-refinance"))
-                .andExpect(model().attributeExists("loanRequest"))
-                .andExpect(model().attributeExists("user"))
-                .andExpect(model().attributeExists("loanToRefinance"));
+                .andExpect(view().name("refinance-loan"))
+                .andExpect(model().attributeExists("loanToRefinance"))
+                .andExpect(model().attributeExists("loanRequest"));
+
+        verify(loanService, times(1)).getLoanToRefinance(any());
+        verify(userService, times(1)).getById(any());
+    }
+
+    @Test
+    void postAcceptLoanRefinance_returnCreatedLoan() throws Exception {
+        when(userService.getById(any())).thenReturn(randomUser());
+
+        UUID userId = UUID.randomUUID();
+        AuthenticateUser principal = new AuthenticateUser(userId, "lenkin", "asdasd", UserRole.USER, true);
+        MockHttpServletRequestBuilder request = post("/loan/accept-refinance")
+                .formField("periodInMonths","3")
+                .formField("amount","1000")
+                .with(user(principal))
+                .with(csrf());
+
+        mockMvc.perform(request)
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/loan"));
+    }
+
+    @Test
+    void getRequestRefinanceDetailsEndpoint_returnRequestRefinancePage() throws Exception {
+        when(userService.getById(any())).thenReturn(randomUser());
+        when(loanService.initializeRefinance(any(), any())).thenReturn(randomLoan());
+        when(loanService.getLoanToRefinance(any())).thenReturn(randomLoan());
+
+        UUID userId = UUID.randomUUID();
+        AuthenticateUser principal = new AuthenticateUser(userId, "lenkin", "asdasd", UserRole.USER, true);
+        MockHttpServletRequestBuilder request = get("/loan/refinance-details")
+                .with(user(principal));
+
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(view().name("refinance-details"))
+                .andExpect(model().attributeExists("loanToRefinance"))
+                .andExpect(model().attributeExists("loanDetails"))
+                .andExpect(model().attributeExists("user"));
+
+        verify(loanService, times(1)).getLoanToRefinance(any());
+        verify(userService, times(1)).getById(any());
+        verify(loanService, times(1)).initializeRefinance(any(), any());
     }
 }

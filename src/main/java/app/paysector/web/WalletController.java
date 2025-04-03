@@ -39,7 +39,6 @@ public class WalletController {
         modelAndView.addObject("user", user);
 
 
-
         return modelAndView;
     }
 

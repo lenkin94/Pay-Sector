@@ -1,5 +1,7 @@
 package app.paysector.web;
 
+import app.paysector.bill.dto.Bill;
+import app.paysector.bill.dto.BillType;
 import app.paysector.loan.model.Loan;
 import app.paysector.loan.model.LoanStatus;
 import app.paysector.transaction.model.Transaction;
@@ -22,7 +24,7 @@ public class TestBuilder {
     public static User randomUser() {
         User user = User.builder()
                 .id(UUID.randomUUID())
-                .username("lenkin")
+                .username("solakov")
                 .password("asdasd")
                 .role(UserRole.USER)
                 .country(Country.BULGARIA)
@@ -71,7 +73,7 @@ public class TestBuilder {
         return Wallet.builder()
                 .id(UUID.randomUUID())
                 .owner(randomUser())
-                .balance(BigDecimal.ZERO)
+                .balance(BigDecimal.valueOf(1000))
                 .currency(Currency.getInstance("EUR"))
                 .createdOn(LocalDateTime.now())
                 .updatedOn(LocalDateTime.now())
@@ -91,6 +93,19 @@ public class TestBuilder {
                 .balanceLeft(randomUser().getWallet().getBalance())
                 .description("asd")
                 .failureReason(null)
+                .build();
+    }
+
+    public static Bill randomBill() {
+        return Bill.builder()
+                .id(UUID.randomUUID())
+                .billNumber("1321231231")
+                .billType(BillType.ELECTRICITY)
+                .amount(BigDecimal.valueOf(100))
+                .startPeriod(LocalDate.now())
+                .endPeriod(LocalDate.now())
+                .isPaid(false)
+                .paidOn(null)
                 .build();
     }
 }
